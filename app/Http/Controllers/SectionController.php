@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Models\Invoice_attachment;
 use App\Models\section;
 use Illuminate\Http\Request;
 use App\Models\invoiceDetail;
+use App\Models\Invoice_attachment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SectionController extends Controller
@@ -86,7 +87,7 @@ class SectionController extends Controller
         // $invoice_detail = invoiceDetail::where('section', $section->id)->first();
         // $i = $section->invoice_detail;
         // $i = $section->with('invoice_detail')->get();
-        // $invoice_attachment=Invoice_attachment::where('')
+        // $invoice_attachment=Invoice_attachment::where('');
         return view('section.show', compact('section'));
     }
 
@@ -140,5 +141,13 @@ class SectionController extends Controller
         if ($delete) {
             return redirect()->route('user.section.index');
         }
+    }
+    public function getProduct($id)
+    {
+        $section = Section::findOrFail($id);
+        // $section = Section::where('id', $id)->first();
+        $product = DB::table('products')->where('section_id', $section->id)->pluck('product_name', 'id');
+        return json_encode($product);
+        // dd($product);
     }
 }

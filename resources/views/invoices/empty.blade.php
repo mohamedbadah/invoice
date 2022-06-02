@@ -1,14 +1,14 @@
 @extends('layouts.master')
 @section('css')
-    <link href="{{ URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    {{-- <link href="{{ URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/plugins/datatable/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet"> --}}
 @endsection
 <style>
-    .dropdown .del,
+    /* .dropdown .del,
     .dropdown .up,
     .dropdown .updateState,
     .dropdown .archive {
@@ -36,7 +36,7 @@
         background-color: rgb(94, 243, 35);
         color: #Fff;
         text-align: center;
-    }
+    } */
 
 </style>
 @section('page-header')
@@ -88,6 +88,7 @@
                     </div>
                 @endif
                 <a class="btn btn-primary" href="{{ route('user.invoices.create') }}">اضافة</a>
+                <button onclick="html_table('xlsx')" id="buttonExcel" class="btn btn-primary">excel</button>
                 <div class="card mg-b-20">
                     <div class="card-header pb-0">
                         <div class="d-flex justify-content-between">
@@ -167,6 +168,9 @@
                                                             data-invoice_id="{{ $invoice->id }}">
                                                             أرشفة الفاتورة
                                                         </button>
+                                                        <a class="updateState dropdown-item"
+                                                            href="{{ route('user.print', $invoice->id) }}" }>
+                                                            <i class="fa fa-print" aria-hidden="true"></i> طباعة </a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -189,7 +193,7 @@
                                                             @method('delete')
                                                             <div class="modal-body">
                                                                 {{-- هل متاكد من الحذف{{ $invoice->id }} --}}
-                                                                <input type=text name="invoice_id" id="invoice_id"
+                                                                <input type=hidden name="invoice_id" id="invoice_id"
                                                                     value=" ">
                                                             </div>
                                                             <div class="modal-footer">
@@ -268,6 +272,8 @@
     <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
     <!--Internal  Datatable js -->
     <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
+    <script src="{{ asset('dist/js/table2excel.js') }}"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
     <script>
         $('#delete').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
@@ -281,5 +287,20 @@
             var model = $(this);
             model.find('.modal-body #invoice_id').val(invoice_id);
         })
+    </script>
+    <script>
+        function html_table(type, fn, dl) {
+            var data = document.getElementById('example');
+            var file = XLSX.utils.table_to_book(data, {
+                sheet: "sheet1"
+            });
+            return dl ?
+                XLSX.write(file, {
+                    bookType: type,
+                    bookSST: true,
+                    type: 'base64'
+                }) :
+                XLSX.writeFile(file, fn || ('MySheetName.' + (type || 'xlsx')));
+        }
     </script>
 @endsection

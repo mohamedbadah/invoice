@@ -70,7 +70,8 @@ class UserController extends Controller
         ]);
         if (!$validator->fails()) {
             $cred = $request->only('email', 'password');
-            if (Auth::guard('web')->attempt($cred)) {
+            if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'Status' => 'مفعل'])) {
+
                 return response()->json(['message' => 'the login is successful'], Response::HTTP_OK);
             } else {
                 return response()->json(['message' => 'faild'], Response::HTTP_BAD_REQUEST);

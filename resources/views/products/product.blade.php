@@ -110,8 +110,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <textarea rows="4" placeholder="أدخل ملاحظات" class="form-control" cols="60"
-                                    name="description"></textarea>
+                                <textarea rows="4" placeholder="أدخل ملاحظات" class="form-control" cols="60" name="description"></textarea>
                             </div>
 
                     </div>

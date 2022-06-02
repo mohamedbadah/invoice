@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use session;
+use App\Models\User;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\section;
 use Illuminate\Http\Request;
 use App\Models\invoiceDetail;
+use App\Notifications\AddInvoice;
 use App\Models\Invoice_attachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
 
 class InvoiceController extends Controller
 {
@@ -91,6 +94,8 @@ class InvoiceController extends Controller
                     $invoice_attach->invoice_id = $invoice_id;
                     $invoice_attach->save();
                 }
+                $user = User::first();
+                Notification::send($user, new AddInvoice($invoice_id));
             }
             session()->flash('add', 'لقد تمت الاضافة بنجاح');
             return redirect()->back();
@@ -208,7 +213,6 @@ class InvoiceController extends Controller
     public function getPage($id)
     {
         $product = DB::table('products')->where('section_id', $id)->pluck('product_name', 'id');
-        // $product = Product::where('section_id', $id)->first();
         return json_encode($product);
     }
     public function getview($file_name)

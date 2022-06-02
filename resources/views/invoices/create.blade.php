@@ -70,8 +70,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">القسم</label>
-                                <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())"
-                                    onchange="console.log('change is firing')">
+                                <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())">
                                     <!--placeholder-->
                                     <option value="" selected disabled>حدد القسم</option>
                                     @foreach ($sections as $section)
@@ -200,22 +199,13 @@
     <script src="{{ URL::asset('assets/plugins/spectrum-colorpicker/spectrum.js') }}"></script>
     <!-- Internal form-elements js -->
     <script src="{{ URL::asset('assets/js/form-elements.js') }}"></script> --}}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    {{-- <script>
-        var date = $('.fc-datepicker').datepicker({
-            dateFormat: 'yy-mm-dd'
-        }).val();
-    </script> --}}
-
     <script>
         $(document).ready(function() {
             $('select[name="Section"]').on('change', function() {
                 var SectionId = $(this).val();
                 if (SectionId) {
                     $.ajax({
-                        // url: "{{ URL::to('user/sections') }}/" + SectionId,,
-                        url: "/user/sections/" + SectionId,
+                        url: "/user/sectionProduct/" + SectionId,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
@@ -268,3 +258,4 @@
             }
         }
     </script>
+@endsection
