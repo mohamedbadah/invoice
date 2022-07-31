@@ -9,7 +9,7 @@ use App\Models\Product;
 use App\Models\section;
 use Illuminate\Http\Request;
 use App\Models\invoiceDetail;
-use App\Notifications\AddInvoice;
+use App\Notifications\Invoice_new;
 use App\Models\Invoice_attachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -94,12 +94,18 @@ class InvoiceController extends Controller
                     $invoice_attach->invoice_id = $invoice_id;
                     $invoice_attach->save();
                 }
-                $user = User::first();
-                Notification::send($user, new AddInvoice($invoice_id));
+                // $user = User::first();
+                // Notification::send($user, new AddInvoice($invoice_id));
+
             }
-            session()->flash('add', 'لقد تمت الاضافة بنجاح');
-            return redirect()->back();
         }
+        // $user = Auth::user();
+        $users = User::get();
+        $invoices = Invoice::latest()->first();
+        Notification::send($users, new Invoice_new($invoices));
+        // $user->notify(new Invoice_new($invoices));
+        session()->flash('add', 'لقد تمت الاضافة بنجاح');
+        return redirect()->back();
     }
 
     /**
@@ -223,7 +229,8 @@ class InvoiceController extends Controller
     public function getDowanload($file_name)
     {
         $file = Storage::disk('upload')->getDriver()->getAdapter()->applyPathPrefix($file_name);
-        return response()->download($file);
+        // return response()->download($file);
+        return Storage::download($file_name);
     }
     public function edit_status($id)
     {
@@ -241,6 +248,23 @@ class InvoiceController extends Controller
             $invoice->update([
                 'status' => $request->Status,
                 'value_status' => 1,
+                'payment_Date' => $request->Payment_Date
+            ]);
+            invoiceDetail::create([
+                'invoice_id' => $request->invoice_id,
+                'invoice_number' => $request->invoice_number,
+                'section' => $request->Section,
+                'product' => $request->product,
+                'status' => $request->Status,
+                'value_status' => 1,
+                'note' => $request->note,
+                'user' => Auth::user()->name,
+                'payment_date' => $request->Payment_Date
+            ]);
+        } else if ($request->Status == 'part') {
+            $invoice->update([
+                'status' => $request->Status,
+                'value_status' => 3,
                 'payment_Date' => $request->Payment_Date
             ]);
             invoiceDetail::create([

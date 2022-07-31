@@ -30,7 +30,7 @@ Route::get('/', function () {
 
 // Auth::routes();
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 
 Route::prefix('user')->name('user.')->group(function () {
     Route::middleware(['guest:web'])->group(function () {
@@ -41,6 +41,7 @@ Route::prefix('user')->name('user.')->group(function () {
     });
     Route::middleware(['auth:web', 'history'])->group(function () {
         Route::view('/home', 'user.home')->name('home');
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
         Route::get('logout', [UserController::class, 'logout'])->name('logout');
         Route::resource('invoices', InvoiceController::class);
         Route::resource('section', SectionController::class);
@@ -67,18 +68,4 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::resource('role', RoleController::class);
         Route::get('/roles/indexs', [RoleController::class, 'indexs'])->name('Roleindexs');
     });
-});
-class Service
-{
-    //
-}
-Route::get('/h', function (Service $service) {
-    echo get_class($service);
-});
-
-Route::get('/h', function (Service $service) {
-    echo get_class($service);
-});
-Route::get('/h', function (Service $service) {
-    echo get_class($service);
 });
